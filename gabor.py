@@ -22,10 +22,6 @@ img = cv2.imread('example.png', 0)
 filters = build_filters()
 res = process(img, filters)
 
-for r,row in enumerate(res):
-    for c,value in enumerate(row):
-        res[r][c] = 255 - value
-
 cv2.imshow('2', res)
 cv2.imwrite('2.png', res)
 cv2.waitKey(0)
