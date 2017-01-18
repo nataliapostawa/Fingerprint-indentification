@@ -10,19 +10,10 @@ def build_filters():
 		filters.append(kern)
 	return filters
 
-def process(img, filters):
+def gabor(img):
+	filters = build_filters()
 	accum = np.zeros_like(img)
 	for kern in filters:
 		fimg = cv2.filter2D(img, cv2.CV_8UC3, kern)
 		np.maximum(accum, fimg, accum)
 	return accum
-
-img = cv2.imread('example.png', 0)
-
-filters = build_filters()
-res = process(img, filters)
-
-cv2.imshow('2', res)
-cv2.imwrite('2.png', res)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
