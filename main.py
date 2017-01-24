@@ -1,5 +1,6 @@
 import argparse
 import cv2
+from skimage import img_as_ubyte
 
 from gabor import gabor
 from threshold import binarise
@@ -19,8 +20,11 @@ if __name__ == '__main__':
     minutiaes = calculate_minutiaes(skeletonized)
 
     cv2.imshow("gabor", gabor_img)
-    cv2.imshow("binarised", binarised_img)
+    cv2.imshow("binarised", img_as_ubyte(binarised_img))
     cv2.imshow("skeletonize", skeletonized)
     cv2.imshow("minutiaes", minutiaes)
+
+    cv2.imwrite("images/binarised.png", img_as_ubyte(binarised_img))
+
     cv2.waitKey(0)
     cv2.destroyAllWindows()

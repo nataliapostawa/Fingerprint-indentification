@@ -13,4 +13,4 @@ def binarise(img):
     # block_size = 49
     # binary = threshold_adaptive(img, block_size, offset=10)
 
-    return img_as_ubyte(binary_global)
+    return binary_global

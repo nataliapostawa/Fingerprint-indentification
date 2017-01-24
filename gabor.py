@@ -11,9 +11,12 @@ def build_filters():
 	return filters
 
 def gabor(img):
+	#kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
+	#img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
+
 	filters = build_filters()
 	accum = np.zeros_like(img)
 	for kern in filters:
 		fimg = cv2.filter2D(img, cv2.CV_8UC3, kern)
-		np.maximum(accum, fimg, accum)
+		accum = np.maximum(accum, fimg)
 	return accum

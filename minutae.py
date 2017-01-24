@@ -22,7 +22,7 @@ def calculate_minutiaes(img):
 	(x, y) = img.shape
 	colors = { "ending" : (150, 0, 0), "bifurcation" : (0, 0, 255) }
 	img2 = img.copy()
-	img2 = cv2.cvtColor(img2,cv2.COLOR_GRAY2RGB)
+	img2 = cv2.cvtColor(img2, cv2.COLOR_GRAY2RGB)
 
 	for i in range(1, x - 1):
 		for j in range(1, y - 1):
