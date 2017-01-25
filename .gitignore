@@ -1,6 +1,6 @@
-./__pycache__
-./images
-./images_dev
+__pycache__
+images
+images_dev
 
 # Windows image file caches
 Thumbs.db
