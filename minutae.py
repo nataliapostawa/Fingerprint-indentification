@@ -19,15 +19,18 @@ def minutiae_at(img, i, j):
 
 def calculate_minutiaes(img):
 
+	minutiaes = []
 	(x, y) = img.shape
-	colors = { "ending" : (150, 0, 0), "bifurcation" : (0, 0, 255) }
+	colors = { "ending" : (255, 0, 0), "bifurcation" : (0, 0, 255) }
 	img2 = img.copy()
 	img2 = cv2.cvtColor(img2, cv2.COLOR_GRAY2RGB)
 
 	for i in range(1, x - 1):
 		for j in range(1, y - 1):
 			minutiae = minutiae_at(img, i, j)
-			if minutiae == "bifurcation":
-				img2 = cv2.circle(img2, (j,i), 3, colors[minutiae], 1)
+			if minutiae != "none":
+				img2 = cv2.circle(img2, (j, i), 3, colors[minutiae], 1)
+				minutiaes.append({ "x": i, "y": j, "type": minutiae })
 
+	print(minutiaes)
 	return img2
