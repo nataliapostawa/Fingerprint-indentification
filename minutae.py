@@ -4,7 +4,6 @@ import cv2
 cells = [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
 
 def minutiae_at(img, i, j):
-				
 	values = [img[i + k][j + l] for k, l in cells]
 
 	crossings = 0
@@ -18,31 +17,20 @@ def minutiae_at(img, i, j):
 			return "bifurcation"
 	return "none"
 
-	
-	
 def calculate_minutiaes(img):
 
+	minutiaes = []
 	(x, y) = img.shape
-	
-	colors = {"ending" : (150, 0, 0), "bifurcation" : (0, 0, 255	)}
+	colors = { "ending" : (255, 0, 0), "bifurcation" : (0, 0, 255) }
 	img2 = img.copy()
-	img2 = cv2.cvtColor(img2,cv2.COLOR_GRAY2RGB)
+	img2 = cv2.cvtColor(img2, cv2.COLOR_GRAY2RGB)
 
 	for i in range(1, x - 1):
 		for j in range(1, y - 1):
 			minutiae = minutiae_at(img, i, j)
-			#print(minutiae)
-			if minutiae == "bifurcation":
-				img2 = cv2.circle(img2, (j,i), 3, colors[minutiae], 1)
-				#print("costam")
+			if minutiae != "none":
+				img2 = cv2.circle(img2, (j, i), 3, colors[minutiae], 1)
+				minutiaes.append({ "x": i, "y": j, "type": minutiae })
 
+	print(minutiaes)
 	return img2
-
-img = cv2.imread('all.png', 0)
-	
-result = calculate_minutiaes(img)
-
-cv2.imshow('2', result)
-cv2.imwrite('minutiae.png', result)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
