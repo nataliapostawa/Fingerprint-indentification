@@ -32,5 +32,4 @@ def calculate_minutiaes(img):
 				img2 = cv2.circle(img2, (j, i), 3, colors[minutiae], 1)
 				minutiaes.append({ "x": i, "y": j, "type": minutiae })
 
-	print(minutiaes)
-	return img2
+	return img2, minutiaes

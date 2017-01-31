@@ -35,13 +35,18 @@ def compare_images(img1, img2):
     print(len(filtered_matches) / 10)
 
     # Draw first 10 matches.
-    return cv2.drawMatches(img1, kp1, img2, kp2, filtered_matches, flags=2, outImg=None)
+    return cv2.drawMatches(img1, kp1, img2, kp2, filtered_matches, flags=2,
+                           outImg=None)
 
 def compare(img_file1, img_file2):
     img1 = prepare_image(img_file1)
     img2 = prepare_image(img_file2)
 
     return compare_images(img1, img2)
+
+def divide_into_parts(X, amount):
+    chunk = int(round(len(X)/amount))
+    return [ [ j for j in range(i, 20) ] for i in range(0, len(X), chunk) ]
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -51,20 +56,17 @@ if __name__ == '__main__':
 
     img1 = cv2.imread(args.file_path1, 0)
     img2 = cv2.imread(args.file_path2, 0)
+    img1 = prepare_image(img1)
+    img2 = prepare_image(img2)
 
-    comp = compare(img1, img2)
-    cv2.imshow("comp", comp)
+    minutiae_img1, minutiae_list1 = calculate_minutiaes(img1)
+    minutiae_img2, minutiae_list2 = calculate_minutiaes(img2)
 
-    # gabor_img = gabor(img1)
-    # binarised_img = binarise(gabor_img)
-    # skeletonized = skeletonize(binarised_img)
-    #minutiaes = calculate_minutiaes(skeletonized)
+    img1_parts = divide_into_parts(minutiae_img1, 20)
+    print(img1_parts)
 
-    # cv2.imshow("image", img1)
-    # cv2.imshow("gabor", gabor_img)
-    # cv2.imshow("binarised", img_as_ubyte(binarised_img))
-    # cv2.imshow("skeletonize", skeletonized)
-    #cv2.imshow("minutiaes", minutiaes)
+    img = np.concatenate((minutiae_img1, minutiae_img2), axis=1)
+    cv2.imshow("img", img)
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
