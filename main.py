@@ -2,6 +2,7 @@ import argparse
 import cv2
 from skimage import img_as_ubyte
 import numpy as np
+from collections import Counter
 
 from gabor import gabor
 from threshold import binarise
@@ -15,7 +16,7 @@ def prepare_image(img):
     binarised_img = binarise(gabor_img)
     return skeletonize(binarised_img)
 
-def compare_images(img1, img2):
+def compare_imagesSIFT(img1, img2):
     # Initiate SIFT detector
     orb = cv2.ORB_create()
 
@@ -44,9 +45,40 @@ def compare(img_file1, img_file2):
 
     return compare_images(img1, img2)
 
-def divide_into_parts(X, amount):
-    chunk = int(round(len(X)/amount))
-    return [ [ j for j in range(i, 20) ] for i in range(0, len(X), chunk) ]
+def get_matrix(list):
+    comparison = [ [ 0 for x in range(301) ] for y in range(301) ]
+    for item in list:
+        comparison[item["x"]][item["y"]] = item["type"];
+
+    return comparison
+
+def get_occurrences(list):
+    number = 300 // 8
+    a = [ x for x in range(301) if x % number == 0 ]
+
+    results = []
+    data = get_matrix(list)
+    for i in range(len(a)-1):
+        for j in range(len(a)-1):
+            dic = Counter()
+            window = data[a[i]:a[i+1]][a[j]:a[j+1]]
+            for row in range(len(window)):
+                for col in range(len(window[row])):
+                    if (window[row][col] != 0):
+                        dic[window[row][col]] += 1
+
+            results.append(dic)
+
+    print(len(results))
+    return results
+
+def simple_matching(list1, list2):
+    list1 = get_occurrences(list1)
+    list2 = get_occurrences(list2)
+
+    match = [ x == y for (x, y) in zip(list1, list2) if (x and y) ]
+    print(match)
+    return match.count(True) / len(match)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -62,11 +94,10 @@ if __name__ == '__main__':
     minutiae_img1, minutiae_list1 = calculate_minutiaes(img1)
     minutiae_img2, minutiae_list2 = calculate_minutiaes(img2)
 
-    img1_parts = divide_into_parts(minutiae_img1, 20)
-    print(img1_parts)
-
     img = np.concatenate((minutiae_img1, minutiae_img2), axis=1)
     cv2.imshow("img", img)
+
+    print(simple_matching(minutiae_list1, minutiae_list2))
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
